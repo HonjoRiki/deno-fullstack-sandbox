@@ -1,4 +1,5 @@
 import { Hono } from "npm:hono@4.11.3";
+import calc from "./routes/calc.ts";
 
 const app = new Hono();
 
@@ -21,28 +22,6 @@ app.options("*", () => {
     });
 });
 
-const history: Array<{
-    id: number,
-    formula: string,
-    date: string,
-}> = [];
-
-app.get("/api/history", (c) => {
-    return c.json(history);
-});
-
-app.post("/api/history", async (c) => {
-    const body = await c.req.json();
-    const newEntry = {
-        id: Date.now(),
-        formula: body.formula,
-        date: new Date().toISOString(),
-    };
-    history.unshift(newEntry);
-    return c.json({
-        success: true,
-        entry: newEntry,
-    });
-});
+app.route("/api/calc", calc);
 
 Deno.serve({ port: 8000 }, app.fetch);

@@ -23,7 +23,7 @@ const errorMessage = ref();
 
 const fetchHistory = async () => {
     try {
-        const res = await fetch("http://localhost:8000/api/history");
+        const res = await fetch("http://localhost:8000/api/calc/history");
         history.value = await res.json();
     } catch (e) {
         console.error("履歴の取得に失敗しました。");
@@ -35,7 +35,7 @@ const calculate = async () => {
     const formula = `${num1.value} + ${num2.value} = ${result.value}`;
 
     try {
-        const res = await fetch("http://localhost:8000/api/history", {
+        const res = await fetch("http://localhost:8000/api/calc/history", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
