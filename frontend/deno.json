@@ -1,0 +1,36 @@
+{
+  "nodeModulesDir": "auto", 
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  "lint": {
+    "exclude": [
+      "**/node_modules/**",
+      "**/.vite/**",
+      "**/dist/**"
+    ]
+  },
+  "fmt": {
+    "exclude": [
+      "**/node_modules/**",
+      "**/.vite/**",
+      "**/dist/**"
+    ]
+  },
+  "tasks": {
+    "dev": "deno run -A npm:vite --host 0.0.0.0",
+    "build": "deno run -A npm:vite build",
+    "preview": "deno run -A npm:vite preview --host 0.0.0.0",
+    "lint": "deno lint"
+  },
+  "imports": {
+    "vue": "npm:vue@^3.4.0",
+    "vue-router": "npm:vue-router@^4.3.0",
+    "vite": "npm:vite@^5.0.0",
+    "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@^5.0.0",
+    "primevue": "npm:primevue@^4",
+    "@primevue/themes/": "npm:/@primevue/themes@^4/",
+    "primeicons": "npm:primeicons@^7"
+  }
+}
