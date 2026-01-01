@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import Select from 'primevue/select';
 import InputNumber from 'primevue/inputnumber';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -10,6 +11,13 @@ import Tag from 'primevue/tag';
 
 const num1 = ref(0);
 const num2 = ref(0);
+const operator = ref('+');
+const operators = ref([
+    { label: '＋', value: '+' },
+    { label: 'ー', value: '-' },
+    { label: '×', value: '*' },
+    { label: '÷', value: '/' }
+]);
 const result = ref(0);
 
 const history = ref<Array<{
@@ -31,24 +39,32 @@ const fetchHistory = async () => {
 }
 
 const calculate = async () => {
-    result.value = num1.value + num2.value;
-    const formula = `${num1.value} + ${num2.value} = ${result.value}`;
+    isError.value = false;
+    errorMessage.value = null;
 
     try {
-        const res = await fetch("http://localhost:8000/api/calc/history", {
+        const res = await fetch("http://localhost:8000/api/calc", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ formula: formula })
-        })
+            body: JSON.stringify({
+                operator: operator.value,
+                operand1: num1.value,
+                operand2: num2.value
+            })
+        });
+        const data = await res.json();
 
-        if (res.ok) {
-            await fetchHistory();
+        if (!res.ok) {
+            throw new Error(data.error || "計算エラーが発生しました");
         }
+
+        result.value = data.result;
+        await fetchHistory();
     } catch (e) {
         isError.value = true;
-        errorMessage.value = e;
+        errorMessage.value = e instanceof Error ? e.message : e;
     }
 };
 
@@ -74,7 +90,7 @@ onMounted(() => {
               decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
               :inputStyle="{ width: '80px', textAlign: 'center' }" />
             
-            <i class="pi pi-plus operator-icon"></i>
+            <Select v-model="operator" :options="operators" optionLabel="label" optionValue="value" :style="{ width: '80px' }" />
             
             <InputNumber v-model="num2" showButtons buttonLayout="horizontal" :step="1"
               decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
