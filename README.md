@@ -22,7 +22,7 @@ Deno 2.0, Hono, and Vue 3 (PrimeVue) を組み合わせた、フルスタックW
 
 ```bash
 # プロジェクトのクローン
-git clone [https://github.com/HonjoRiki/deno-fullstack-sandbox.git](https://github.com/HonjoRiki/deno-fullstack-sandbox.git)
+git clone https://github.com/HonjoRiki/deno-fullstack-sandbox.git
 cd deno-fullstack-sandbox
 
 # 開発環境の起動
