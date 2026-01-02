@@ -9,6 +9,8 @@ import Column from 'primevue/column';
 import Message from 'primevue/message';
 import Tag from 'primevue/tag';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
 const num1 = ref(0);
 const num2 = ref(0);
 const operator = ref('+');
@@ -31,7 +33,7 @@ const errorMessage = ref();
 
 const fetchHistory = async () => {
     try {
-        const res = await fetch("http://localhost:8000/api/calc/history");
+        const res = await fetch(`${API_BASE_URL}/api/calc/history`);
         history.value = await res.json();
     } catch (e) {
         console.error("履歴の取得に失敗しました。");
@@ -43,7 +45,7 @@ const calculate = async () => {
     errorMessage.value = null;
 
     try {
-        const res = await fetch("http://localhost:8000/api/calc", {
+        const res = await fetch(`${API_BASE_URL}/api/calc`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
