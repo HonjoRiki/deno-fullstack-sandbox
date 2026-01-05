@@ -12,7 +12,9 @@ services:
     image: denoland/deno:2.0.0
     ports:
       - "8000:8000"
+    environment:
+      - KV_PATH=/app/kv.sqlite
     volumes:
       - ./backend:/app
     working_dir: /app
-    command: run -A --watch main.ts
+    command: run -A --unstable-kv --watch main.ts

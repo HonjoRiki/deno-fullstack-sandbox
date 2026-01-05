@@ -15,7 +15,7 @@ Deno 2.0, Hono, and Vue 3 (PrimeVue) を組み合わせた、フルスタックW
 |---|---|
 | **Frontend** | Vue 3, Vite, PrimeVue 4, PrimeIcons, TypeScript |
 | **Backend** | Hono, Deno 2.0, TypeScript |
-| **Database** | 未対応 |
+| **Database** | Deno KV |
 | **Infrastructure** | Docker, Docker Compose |
 
 ## 📦 実行方法

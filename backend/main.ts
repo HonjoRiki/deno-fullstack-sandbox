@@ -1,5 +1,6 @@
 import "jsr:@std/dotenv@0.225.6/load";
 import { Hono } from "npm:hono@4.11.3";
+import { cors } from "npm:hono@4.11.3/cors";
 import { ZodError } from "npm:zod@4.3.4";
 import calc from "./routes/calc.ts";
 
@@ -12,24 +13,17 @@ const ALLOWED_METHODS = Deno.env.get("ALLOWED_METHODS") || "GET, POST, PUT, DELE
 const ALLOWED_HEADERS = Deno.env.get("ALLOWED_HEADERS") || "Content-Type, Authorization";
 const MAX_AGE = Deno.env.get("MAX_AGE") || "86400";
 
-app.all("*", async (c, next) => {
-    await next();
-    c.res.headers.set("Access-Control-Allow-Origin", FRONTEND_URL);
-    c.res.headers.set("Access-Control-Allow-Methods", ALLOWED_METHODS);
-    c.res.headers.set("Access-Control-Allow-Headers", ALLOWED_HEADERS);
-    c.res.headers.set("Access-Control-Max-Age", MAX_AGE);
-});
-
-app.options("*", () => {
-    return new Response(null, {
-        status: 204,
-        headers: {
-            "Access-Control-Allow-Origin": FRONTEND_URL,
-            "Access-Control-Allow-Methods": ALLOWED_METHODS,
-            "Access-Control-Allow-Headers": ALLOWED_HEADERS
-        },
-    });
-});
+app.use("*", cors({
+    origin: (origin) => {
+        if (DENO_ENV === "development") {
+            return origin;
+        }
+        return FRONTEND_URL;
+    },
+    allowMethods: ALLOWED_METHODS.split(",").map((m) => m.trim()),
+    allowHeaders: ALLOWED_HEADERS.split(",").map((h) => h.trim()),
+    maxAge: Number(MAX_AGE),
+}));
 
 app.onError((err, c) => {
     if (err instanceof ZodError) {

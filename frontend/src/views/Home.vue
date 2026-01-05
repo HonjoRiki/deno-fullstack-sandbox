@@ -24,7 +24,7 @@ import Tag from 'primevue/tag';
       <Card class="feature-card">
         <template #title>🧮 Calculator App</template>
         <template #content>
-          <p>Hono + Deno を利用したフルスタック計算機。現在はメモリ上にしか履歴を残していませんが、いずれDB保存にします。</p>
+          <p>Hono + Deno を利用したフルスタック計算機。Deno KVで計算結果を保存しています。</p>
         </template>
         <template #footer>
           <router-link to="/calc" class="no-underline">
@@ -39,7 +39,7 @@ import Tag from 'primevue/tag';
           <ul class="feature-list">
             <li><i class="pi pi-check-circle"></i> <b>Frontend:</b> Vite + PrimeVue 4</li>
             <li><i class="pi pi-check-circle"></i> <b>Backend:</b> Hono (Deno 2.0)</li>
-            <li><i class="pi pi-check-circle"></i> <b>Database:</b> none </li>
+            <li><i class="pi pi-check-circle"></i> <b>Database:</b> Deno KV</li>
             <li><i class="pi pi-check-circle"></i> <b>DevOps:</b> Docker Compose</li>
           </ul>
         </template>

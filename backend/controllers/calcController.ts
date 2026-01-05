@@ -31,7 +31,7 @@ export const calculateAndSave = async (c: Context) => {
     const result = calculate(expression);
 
     const formulaStr = `${toString(expression)} = ${result}`;
-    const newEntry = create(formulaStr);
+    const newEntry = await create(formulaStr);
 
     return c.json({
         success: true,
@@ -40,14 +40,14 @@ export const calculateAndSave = async (c: Context) => {
     });
 };
 
-export const getHistory = (c: Context) => {
-    return c.json(findAll());
+export const getHistory = async (c: Context) => {
+    return c.json(await findAll());
 };
 
 export const createHistory = async (c: Context) => {
     const body = await c.req.json();
     const { formula } = createHistorySchema.parse(body);
-    const newEntry = create(toString(formula));
+    const newEntry = await create(toString(formula));
     return c.json({
         success: true,
         entry: newEntry,
