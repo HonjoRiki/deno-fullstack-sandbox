@@ -3,7 +3,6 @@ import { SaveCalculation } from "../domain/types.ts";
 import { Context } from "npm:hono@4.11.3";
 import { calcUseCase } from "../usecase/calc_usecase.ts";
 
-
 const CalcSchema = z.object({
     operand1: z.number(),
     operator: z.enum(["add", "sub", "mul", "div"]),

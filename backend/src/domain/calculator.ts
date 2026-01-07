@@ -1,6 +1,5 @@
 import { Operator } from "./types.ts";
 
-
 export const calculate = (
     op1: number,
     operator: Operator,
