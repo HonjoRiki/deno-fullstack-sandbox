@@ -2,7 +2,9 @@ import "jsr:@std/dotenv@0.225.6/load";
 import { Hono } from "npm:hono@4.11.3";
 import { cors } from "npm:hono@4.11.3/cors";
 import { ZodError } from "npm:zod@4.3.4";
-import calc from "./routes/calc.ts";
+import { handleCalc } from "./src/interface/calc_handler.ts";
+import { createKvRepository } from "./src/infra/kv_repository.ts";
+import { handleHistory } from "./src/interface/calc_history_handler.ts";
 
 const app = new Hono();
 
@@ -38,6 +40,10 @@ app.onError((err, c) => {
     return c.json({ success: false, message }, 500);
 });
 
-app.route("/api/calc", calc);
+const kv = await Deno.openKv();
+const repo = createKvRepository(kv);
+
+app.post("/api/calc", handleCalc(repo.save));
+app.get("/api/calc/histories", handleHistory(repo.getAll));
 
 Deno.serve({ port: PORT }, app.fetch);

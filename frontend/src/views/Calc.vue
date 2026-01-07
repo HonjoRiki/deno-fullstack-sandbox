@@ -13,19 +13,22 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000
 
 const num1 = ref(0);
 const num2 = ref(0);
-const operator = ref('+');
+const operator = ref('add');
 const operators = ref([
-    { label: '＋', value: '+' },
-    { label: 'ー', value: '-' },
-    { label: '×', value: '*' },
-    { label: '÷', value: '/' }
+    { label: '＋', value: 'add' },
+    { label: '−', value: 'sub' },
+    { label: '×', value: 'mul' },
+    { label: '÷', value: 'div' }
 ]);
 const result = ref(0);
 
 const history = ref<Array<{
     id: number,
-    formula: string,
-    date: string,
+    operator: string,
+    operand1: number,
+    operand2: number,
+    result: number,
+    createdAt: string,
 }>>([]);
 
 const isError = ref(false);
@@ -33,12 +36,16 @@ const errorMessage = ref();
 
 const fetchHistory = async () => {
     try {
-        const res = await fetch(`${API_BASE_URL}/api/calc/history`);
+        const res = await fetch(`${API_BASE_URL}/api/calc/histories`);
         history.value = await res.json();
     } catch (e) {
         console.error("履歴の取得に失敗しました。");
     }
 }
+
+const getOperatorLabel = (opValue: string) => {
+    return operators.value.find(op => op.value === opValue)?.label || opValue;
+};
 
 const calculate = async () => {
     isError.value = false;
@@ -62,7 +69,7 @@ const calculate = async () => {
             throw new Error(data.error || "計算エラーが発生しました");
         }
 
-        result.value = data.result;
+        result.value = data.result.result;
         await fetchHistory();
     } catch (e) {
         isError.value = true;
@@ -118,12 +125,12 @@ onMounted(() => {
           <DataTable :value="history" size="small" paginator :rows="5" class="custom-table" responsiveLayout="scroll">
             <Column field="formula" header="計算式">
               <template #body="slotProps">
-                <code class="formula-text">{{ slotProps.data.formula }}</code>
+                <code class="formula-text">{{ slotProps.data.operand1 }} {{ getOperatorLabel(slotProps.data.operator) }} {{ slotProps.data.operand2 }} = {{ slotProps.data.result }}</code>
               </template>
             </Column>
             <Column field="date" header="時刻">
               <template #body="slotProps">
-                <Tag severity="secondary" :value="new Date(slotProps.data.date).toLocaleTimeString()" />
+                <Tag severity="secondary" :value="new Date(slotProps.data.createdAt).toLocaleTimeString()" />
               </template>
             </Column>
           </DataTable>
