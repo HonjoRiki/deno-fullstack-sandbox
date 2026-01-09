@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Select from 'primevue/select';
@@ -8,78 +7,21 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Message from 'primevue/message';
 import Tag from 'primevue/tag';
+import { useCalc } from '../composables/useCalc';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
-
-const num1 = ref(0);
-const num2 = ref(0);
-const operator = ref('add');
-const operators = ref([
-    { label: '＋', value: 'add' },
-    { label: '−', value: 'sub' },
-    { label: '×', value: 'mul' },
-    { label: '÷', value: 'div' }
-]);
-const result = ref(0);
-
-const history = ref<Array<{
-    id: number,
-    operator: string,
-    operand1: number,
-    operand2: number,
-    result: number,
-    createdAt: string,
-}>>([]);
-
-const isError = ref(false);
-const errorMessage = ref();
-
-const fetchHistory = async () => {
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/calc/histories`);
-        history.value = await res.json();
-    } catch (e) {
-        console.error("履歴の取得に失敗しました。");
-    }
-}
-
-const getOperatorLabel = (opValue: string) => {
-    return operators.value.find(op => op.value === opValue)?.label || opValue;
-};
-
-const calculate = async () => {
-    isError.value = false;
-    errorMessage.value = null;
-
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/calc`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                operator: operator.value,
-                operand1: num1.value,
-                operand2: num2.value
-            })
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.error || "計算エラーが発生しました");
-        }
-
-        result.value = data.result.result;
-        await fetchHistory();
-    } catch (e) {
-        isError.value = true;
-        errorMessage.value = e instanceof Error ? e.message : e;
-    }
-};
-
-onMounted(() => {
-    fetchHistory();
-});
+const {
+  num1,
+  num2,
+  operator,
+  operators,
+  result,
+  history,
+  isError,
+  errorMessage,
+  calculate,
+  getOperatorLabel,
+  clearHistory
+} = useCalc();
 </script>
 
 <template>
@@ -119,7 +61,7 @@ onMounted(() => {
         <div class="history-section">
           <div class="history-header">
             <h3 class="history-title"><i class="pi pi-history history-icon"></i>履歴</h3>
-            <Button label="Clear" icon="pi pi-trash" severity="danger" text size="small" @click="history = []" />
+            <Button label="Clear" icon="pi pi-trash" severity="danger" text size="small" @click="clearHistory" />
           </div>
           
           <DataTable :value="history" size="small" paginator :rows="5" class="custom-table" responsiveLayout="scroll">
