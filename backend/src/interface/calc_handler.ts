@@ -1,6 +1,6 @@
-import z from "npm:zod@4.3.4";
+import z from "zod";
 import { SaveCalculation } from "../domain/types.ts";
-import { Context } from "npm:hono@4.11.3";
+import { Context } from "hono";
 import { calcUseCase } from "../usecase/calc_usecase.ts";
 
 const CalcSchema = z.object({

@@ -1,4 +1,4 @@
-import { Context } from "npm:hono@4.11.3";
+import { Context } from "hono";
 import { GetCalculations } from "../domain/types.ts";
 import { calcHistoryUseCase } from "../usecase/calc_history_usecase.ts";
 
