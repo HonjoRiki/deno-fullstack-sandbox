@@ -13,7 +13,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - KV_PATH=/app/kv.sqlite
+      - DENO_KV_PATH=/app/kv.sqlite
     volumes:
       - ./backend:/app
     working_dir: /app

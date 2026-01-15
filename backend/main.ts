@@ -5,7 +5,7 @@ import { createApp } from "./src/app.ts";
 const PORT = Number(Deno.env.get("PORT")) || 8000;
 
 // 本番/開発用のKVを開く
-const kv = await Deno.openKv();
+const kv = await Deno.openKv(Deno.env.get("DENO_KV_PATH"));
 const repo = createKvRepository(kv);
 
 const app = createApp(repo);
