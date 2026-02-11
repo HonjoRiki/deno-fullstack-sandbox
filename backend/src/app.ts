@@ -4,10 +4,14 @@ import { ZodError } from "zod";
 import { handleCalc } from "./interface/calc_handler.ts";
 import { handleHistory } from "./interface/calc_history_handler.ts";
 import { createKvRepository } from "./infra/kv_repository.ts";
+import { handleNovel } from "./interface/novel_handler.ts";
+import { createKvStoryTextRepository } from "./infra/kv_story_text_repository.ts";
 
 export type Repository = ReturnType<typeof createKvRepository>;
+export type StoryRepository = ReturnType<typeof createKvStoryTextRepository>;
 
-export const createApp = (repo: Repository) => {
+
+export const createApp = (repo: Repository, storyRepo: StoryRepository) => {
   const app = new Hono();
 
   const DENO_ENV = Deno.env.get("DENO_ENV") || "development";
@@ -43,6 +47,9 @@ export const createApp = (repo: Repository) => {
 
   app.post("/api/calc", handleCalc(repo.save));
   app.get("/api/calc/histories", handleHistory(repo.getAll));
+
+  app.get("/api/novel", handleNovel(storyRepo.getAll));
+
 
   return app;
 };
